@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block container %}
+
+  <main class="container mt-3 mb-5">
+    <section>
+        <div style="margin-left:auto;margin-right:auto;width:300px;height:300px;">
+            <img src="{{ url_for('static', filename='img/404.jpg') }}">
+        </div>
+        <h2 class="text-center mt-5 mb-3">Ой, страница не найдена</h2>
+        <p class="text-center mb-4">Извините, но мы не нашли запрашиваемую страницу</p>
+        <div class="text-center pb-5">
+            <a href="/" class="btn btn-primary">Перейти на главную</a>
+        </div>
+    </section>
+  </main>
+
+{% endblock %}

@@ -2,7 +2,9 @@ from flask_wtf import FlaskForm
 from wtforms import HiddenField, SubmitField, StringField, RadioField
 from wtforms.validators import InputRequired, Length, Regexp
 from wtforms.fields.html5 import TelField
+
 import json
+
 
 week_days = {
     "mon": "Понедельник",
@@ -13,6 +15,7 @@ week_days = {
     "sat": "Суббота",
     "sun": "Воскресенье"
 }
+
 week_times = {
     "time12": "1-2 часа в неделю",
     "time35": "3-5 часов в неделю",
@@ -20,12 +23,14 @@ week_times = {
     "time710": "7-10 часов в неделю"
 }
 
+
 goal_select = []
 with open("data.json", "r", encoding="utf-8") as file:
     data_json = json.load(file)
 goals = data_json.get("goals")
 for key, value in goals.items():
     goal_select.append((key, value['title']))
+
 
 time_select = []
 for key, value in week_times.items():

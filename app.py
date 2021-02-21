@@ -1,12 +1,25 @@
+import os.path
+
 from flask import Flask, render_template, abort
 from numpy import random
-import os.path
+
 import forms
 import json
 
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "bd65611d-8449-4903-8a14-af84303add38"  # str(random.randint(10000, 99999))  # set up a secret key
+app.config["SECRET_KEY"] = "bd65611d-8449-4903-8a14-af84303add38"
+
+
+def check_fulltime(teacher, weekday, time):
+    fulltime = time + ':00'
+    if not weekday in teacher['free'].keys():
+        return False
+    elif not fulltime in teacher['free'][weekday].keys():
+        return False
+    elif teacher['free'][weekday][fulltime] != True:
+        return False
+    return True
 
 
 @app.route('/')
@@ -16,9 +29,6 @@ def render_index():
         data_json = json.load(file)
     goals = data_json.get("goals")
     teachers = data_json.get("teachers")
-    #keys = [teacher['id'] for teacher in teachers]
-    #keys = random.choice(keys, 6, replace=False)
-    #teachers = [teacher for teacher in teachers if teacher['id'] in keys]
     random.shuffle(teachers)
 
     return render_template("index.html", goals=goals, teachers=teachers[0:6])
@@ -75,17 +85,11 @@ def render_booking(teacher_id, weekday, time):
     goals = data_json.get("goals")
     teachers = data_json.get('teachers')
     teachers = [teacher for teacher in teachers if teacher.get("id") == teacher_id]
-    if len(teachers) != 0:
-        teacher = teachers[0]
-    else:
+    if not teachers:
         abort(404)
 
-    fulltime = time + ":00"
-    if not weekday in teacher['free'].keys():
-        abort(404)
-    elif not fulltime in teacher['free'][weekday].keys():
-        abort(404)
-    elif teacher['free'][weekday][fulltime] != True:
+    teacher = teachers[0]
+    if not check_fulltime(teacher, weekday, time):
         abort(404)
 
     return render_template("booking.html", form=forms.BookingForm(), goals=goals, teacher=teacher, week_days=forms.week_days, weekday=weekday, time=time)
@@ -106,17 +110,11 @@ def render_booking_done():
     goals = data_json.get("goals")
     teachers = data_json.get('teachers')
     teachers = [teacher for teacher in teachers if str(teacher.get("id")) == teacher_id]
-    if len(teachers) != 0:
-        teacher = teachers[0]
-    else:
+    if not teachers:
         abort(404)
 
-    fulltime = time + ":00"
-    if not weekday in teacher['free'].keys():
-        abort(404)
-    elif not fulltime in teacher['free'][weekday].keys():
-        abort(404)
-    elif teacher['free'][weekday][fulltime] != True:
+    teacher = teachers[0]
+    if not check_fulltime(teacher, weekday, time):
         abort(404)
 
     if not form.validate_on_submit():

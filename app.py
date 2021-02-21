@@ -71,7 +71,7 @@ def render_profile(teacher_id):
     goals = data_json.get("goals")
     teachers = data_json.get('teachers')
     teachers = [teacher for teacher in teachers if teacher.get("id") == teacher_id]
-    if len(teachers) == 0:
+    if not teachers:
         abort(404)
 
     return render_template("profile.html", goals=goals, teacher=teachers[0], week_days=forms.week_days)

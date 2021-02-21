@@ -23,7 +23,7 @@
                 <h6 class="mt-4">{{ week_days[day] }}</h6>
                   {% if True in teacher.free[day].values() %}
                     {% for time in teacher.free[day].keys() %}
-                    {% if teacher_free[day][time] %}<a href="/booking/{{ teacher.id }}/{{ day }}/{{ time.split(":")[0] }}/" class="btn btn-outline-success mr-2 mb-3">{{ time }} свободно</a>
+                    {% if teacher.free[day][time] %}<a href="/booking/{{ teacher.id }}/{{ day }}/{{ time.split(":")[0] }}/" class="btn btn-outline-success mr-2 mb-3">{{ time }} свободно</a>
                     {% else %}<a href="#" class="btn btn-outline-secondary mr-2 mb-3 disabled">{{ time }} занято</a>
                     {% endfor %}
                   {% else %}

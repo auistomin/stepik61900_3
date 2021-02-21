@@ -1,4 +1,4 @@
-from flask import Flask, render_template, abort, request, redirect
+from flask import Flask, render_template, abort
 from numpy import random
 import os.path
 import forms

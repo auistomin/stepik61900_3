@@ -25,6 +25,7 @@
                     {% for time in teacher.free[day].keys() %}
                     {% if teacher.free[day][time] %}<a href="/booking/{{ teacher.id }}/{{ day }}/{{ time.split(":")[0] }}/" class="btn btn-outline-success mr-2 mb-3">{{ time }} свободно</a>
                     {% else %}<a href="#" class="btn btn-outline-secondary mr-2 mb-3 disabled">{{ time }} занято</a>
+                    {% endif %}
                     {% endfor %}
                   {% else %}
                     <p>Нет свободных уроков</p>

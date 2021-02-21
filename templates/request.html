@@ -14,11 +14,11 @@
           {{ form.csrf_token }}
           <div class="row">
             <div class="col">
-              <p>{{ form.clientGoal.label.text }}</p>
-              {% for error in form.clientGoal.errors %}
+              <p>{{ form.goal.label.text }}</p>
+              {% for error in form.goal.errors %}
               <div class="alert alert-danger" role="alert">{{ error }}</div>
               {% endfor %}
-              {% for subfield in form.clientGoal %}
+              {% for subfield in form.goal %}
               <div class="form-check ">
                 {{ subfield(class_='form-check-input') }}
                 {{ subfield.label(class_='form-check-label') }}
@@ -26,11 +26,11 @@
               {% endfor %}
             </div>
             <div class="col">
-              <p>{{ form.clientTime.label.text }}</p>
-              {% for error in form.clientTime.errors %}
+              <p>{{ form.time.label.text }}</p>
+              {% for error in form.time.errors %}
               <div class="alert alert-danger" role="alert">{{ error }}</div>
               {% endfor %}
-              {% for subfield in form.clientTime %}
+              {% for subfield in form.time %}
               <div class="form-check">
                 {{ subfield(class_='form-check-input') }}
                 {{ subfield.label(class_='form-check-label') }}
@@ -42,17 +42,17 @@
         <hr>
         <div class="card-body mx-3">
 
-          {{form.clientName.label(class_="mb-1 mt-2")}}
-          {% for error in form.clientName.errors %}
+          {{form.name.label(class_="mb-1 mt-2")}}
+          {% for error in form.name.errors %}
           <div class="alert alert-danger" role="alert"> {{ error }} </div>
           {% endfor %}
-          {{form.clientName(class_="form-control", placeholder="Введите свое имя")}}
+          {{form.name(class_="form-control", placeholder="Введите свое имя")}}
 
-          {{form.clientPhone.label(class_="mb-1 mt-2")}}
-          {% for error in form.clientPhone.errors %}
+          {{form.phone.label(class_="mb-1 mt-2")}}
+          {% for error in form.phone.errors %}
           <div class="alert alert-danger" role="alert"> {{ error }} </div>
           {% endfor %}
-          {{form.clientPhone(class_="form-control mask-phone", placeholder="Введите свой телефон")}}
+          {{form.phone(class_="form-control mask-phone", placeholder="Введите свой телефон")}}
 
           {{ form.submit(class_="btn btn-primary mt-4 mb-2") }}
 

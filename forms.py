@@ -33,16 +33,17 @@ for key, value in week_times.items():
 
 
 class BookingForm(FlaskForm):
-    clientWeekday = HiddenField()
-    clientTime = HiddenField()
-    clientTeacher = HiddenField()
-    clientName = StringField("Вас зовут", validators=[InputRequired("Введите ваше имя"), Length(min=2, message="Имя должно быть не менее 2 символов")])
-    clientPhone = TelField("Ваш телефон", validators=[InputRequired("Введите ваш номер телефона"), Regexp("^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$", message="Номер телефона имеет некорректный формат")])
+    weekday = HiddenField()
+    time = HiddenField()
+    teacher = HiddenField()
+    name = StringField("Вас зовут", validators=[InputRequired("Введите ваше имя"), Length(min=2, message="Имя должно быть не менее 2 символов")])
+    phone = TelField("Ваш телефон", validators=[InputRequired("Введите ваш номер телефона"), Regexp("^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$", message="Номер телефона имеет некорректный формат")])
     submit = SubmitField("Записаться на пробный урок")
 
+
 class RequestForm(FlaskForm):
-    clientGoal = RadioField('Какая цель занятий?', choices=goal_select, default="travel")
-    clientTime = RadioField('Сколько времени есть?', choices=time_select, default="time12")
-    clientName = StringField("Вас зовут", validators=[InputRequired("Введите ваше имя"), Length(min=2, message="Имя должно быть не менее 2 символов")])
-    clientPhone = TelField("Ваш телефон", validators=[InputRequired("Введите ваш номер телефона"), Regexp("^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$", message="Номер телефона имеет некорректный формат")])
+    goal = RadioField('Какая цель занятий?', choices=goal_select, default="travel")
+    time = RadioField('Сколько времени есть?', choices=time_select, default="time12")
+    name = StringField("Вас зовут", validators=[InputRequired("Введите ваше имя"), Length(min=2, message="Имя должно быть не менее 2 символов")])
+    phone = TelField("Ваш телефон", validators=[InputRequired("Введите ваш номер телефона"), Regexp("^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$", message="Номер телефона имеет некорректный формат")])
     submit = SubmitField("Найдите мне преподавателя")

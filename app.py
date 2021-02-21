@@ -67,51 +67,71 @@ def render_profile(teacher_id):
     return render_template("profile.html", goals=goals, teacher=teachers[0], week_days=forms.week_days)
 
 
-@app.route('/booking/<int:teacher_id>/<day>/<time>/', methods=['GET', 'POST'])
-def render_booking(teacher_id, day, time):
+@app.route('/booking/<int:teacher_id>/<weekday>/<time>/', methods=['GET', 'POST'])
+def render_booking(teacher_id, weekday, time):
 
     with open("data.json", encoding="utf-8") as file:
         data_json = json.load(file)
     goals = data_json.get("goals")
     teachers = data_json.get('teachers')
     teachers = [teacher for teacher in teachers if teacher.get("id") == teacher_id]
-    if len(teachers) == 0:
+    if len(teachers) != 0:
+        teacher = teachers[0]
+    else:
         abort(404)
 
-    return render_template("booking.html", form=forms.BookingForm(), goals=goals, teacher=teachers[0], week_days=forms.week_days, day=day, time=time)
+    fulltime = time + ":00"
+    if not weekday in teacher['free'].keys():
+        abort(404)
+    elif not fulltime in teacher['free'][weekday].keys():
+        abort(404)
+    elif teacher['free'][weekday][fulltime] != True:
+        abort(404)
+
+    return render_template("booking.html", form=forms.BookingForm(), goals=goals, teacher=teacher, week_days=forms.week_days, weekday=weekday, time=time)
 
 
 @app.route('/booking_done/', methods=['POST'])
 def render_booking_done():
 
     form = forms.BookingForm()
-    client_teacher = form.clientTeacher.data
-    client_weekday = form.clientWeekday.data
-    client_time = form.clientTime.data
-    client_name = form.clientName.data
-    client_phone = form.clientPhone.data
+    teacher_id = form.teacher.data
+    weekday = form.weekday.data
+    time = form.time.data
+    name = form.name.data
+    phone = form.phone.data
 
     with open("data.json", encoding="utf-8") as file:
         data_json = json.load(file)
     goals = data_json.get("goals")
     teachers = data_json.get('teachers')
-    teachers = [teacher for teacher in teachers if str(teacher.get("id")) == client_teacher]
-    if len(teachers) == 0:
+    teachers = [teacher for teacher in teachers if str(teacher.get("id")) == teacher_id]
+    if len(teachers) != 0:
+        teacher = teachers[0]
+    else:
+        abort(404)
+
+    fulltime = time + ":00"
+    if not weekday in teacher['free'].keys():
+        abort(404)
+    elif not fulltime in teacher['free'][weekday].keys():
+        abort(404)
+    elif teacher['free'][weekday][fulltime] != True:
         abort(404)
 
     if not form.validate_on_submit():
-        return render_template("booking.html", form=form, goals=goals, teacher=teachers[0], week_days=forms.week_days, day=client_weekday, time=client_time)
+        return render_template("booking.html", form=form, goals=goals, teacher=teacher, week_days=forms.week_days, weekday=weekday, time=time)
 
     if not os.path.exists('booking.json'):
         booking_json = []
     else:
         with open("booking.json", "r", encoding="utf-8") as file:
             booking_json = json.load(file)
-    booking_json.append({"teacher_id": client_teacher, "day": client_weekday, "time": client_time + ':00', "phone": client_phone, "name": client_name})
+    booking_json.append({"teacher_id": teacher_id, "weekday": weekday, "time": time + ':00', "phone": phone, "name": name})
     with open("booking.json", "w", encoding="utf-8") as file:
         json.dump(booking_json, file, ensure_ascii=False)
 
-    return render_template("booking_done.html", goals=goals, day=forms.week_days[client_weekday], time=client_time, clientName=client_name, clientPhone=client_phone)
+    return render_template("booking_done.html", goals=goals, weekday=forms.week_days[weekday], time=time, name=name, phone=phone)
 
 
 @app.route('/request/', methods=["POST", "GET"])
@@ -132,10 +152,10 @@ def render_request_done():
     goals = data_json.get("goals")
 
     form = forms.RequestForm()
-    goal = form.clientGoal.data
-    time = form.clientTime.data
-    name = form.clientName.data
-    phone = form.clientPhone.data
+    goal = form.goal.data
+    time = form.time.data
+    name = form.name.data
+    phone = form.phone.data
     if not form.validate_on_submit():
         return render_template("request.html", form=form, goals=goals)
 

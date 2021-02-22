@@ -1,10 +1,10 @@
+import json
 import os.path
 
 from flask import Flask, render_template, abort
 from numpy import random
 
 import forms
-import json
 
 
 app = Flask(__name__)
@@ -13,13 +13,24 @@ app.config["SECRET_KEY"] = "bd65611d-8449-4903-8a14-af84303add38"
 
 def check_fulltime(teacher, weekday, time):
     fulltime = time + ':00'
-    if not weekday in teacher['free'].keys():
+    if weekday not in teacher['free']:
         return False
-    elif not fulltime in teacher['free'][weekday].keys():
+    elif fulltime not in teacher['free'][weekday]:
         return False
-    elif teacher['free'][weekday][fulltime] != True:
+    elif not teacher['free'][weekday][fulltime]:
         return False
     return True
+
+
+def read_goals_teachers(teacher_id, filename="data.json"):
+    with open(filename, encoding="utf-8") as file:
+        data_json = json.load(file)
+    goals = data_json.get("goals")
+    teachers = data_json.get('teachers')
+    teachers = [teacher for teacher in teachers if teacher.get("id") == teacher_id]
+    if not teachers:
+        abort(404)
+    return goals, teachers
 
 
 @app.route('/')
@@ -66,27 +77,14 @@ def render_goal(goal):
 @app.route('/profile/<int:teacher_id>/')
 def render_profile(teacher_id):
 
-    with open("data.json", encoding="utf-8") as file:
-        data_json = json.load(file)
-    goals = data_json.get("goals")
-    teachers = data_json.get('teachers')
-    teachers = [teacher for teacher in teachers if teacher.get("id") == teacher_id]
-    if not teachers:
-        abort(404)
-
+    goals, teachers = read_goals_teachers(teacher_id)
     return render_template("profile.html", goals=goals, teacher=teachers[0], week_days=forms.week_days)
 
 
 @app.route('/booking/<int:teacher_id>/<weekday>/<time>/', methods=['GET', 'POST'])
 def render_booking(teacher_id, weekday, time):
 
-    with open("data.json", encoding="utf-8") as file:
-        data_json = json.load(file)
-    goals = data_json.get("goals")
-    teachers = data_json.get('teachers')
-    teachers = [teacher for teacher in teachers if teacher.get("id") == teacher_id]
-    if not teachers:
-        abort(404)
+    goals, teachers = read_goals_teachers(teacher_id)
 
     teacher = teachers[0]
     if not check_fulltime(teacher, weekday, time):

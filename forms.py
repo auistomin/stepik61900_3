@@ -1,9 +1,9 @@
+import json
+
 from flask_wtf import FlaskForm
 from wtforms import HiddenField, SubmitField, StringField, RadioField
 from wtforms.validators import InputRequired, Length, Regexp
 from wtforms.fields.html5 import TelField
-
-import json
 
 
 week_days = {
